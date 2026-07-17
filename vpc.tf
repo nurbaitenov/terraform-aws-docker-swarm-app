@@ -19,11 +19,11 @@ resource "aws_subnet" "public2" {
   map_public_ip_on_launch = true # each public IP addr should have associate public IP addr
 }
 
-resource "aws_subnet" "public3" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = var.public_subnet3
-  map_public_ip_on_launch = true # each public IP addr should have associate public IP addr
-}
+# resource "aws_subnet" "public3" {
+#   vpc_id                  = aws_vpc.main.id
+#   cidr_block              = var.public_subnet3
+#   map_public_ip_on_launch = true # each public IP addr should have associate public IP addr
+# }
 
 
 # resource "aws_subnet" "private1" {
@@ -88,10 +88,10 @@ resource "aws_route_table_association" "public2" {
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table_association" "public3" {
-  subnet_id      = aws_subnet.public3.id
-  route_table_id = aws_route_table.public.id
-}
+# resource "aws_route_table_association" "public3" {
+#   subnet_id      = aws_subnet.public3.id
+#   route_table_id = aws_route_table.public.id
+# }
 
 # resource "aws_route_table" "private" {
 #   vpc_id = aws_vpc.main.id

@@ -1,8 +1,12 @@
 resource "aws_autoscaling_group" "asg" {
-  vpc_zone_identifier = var.subnets
-  desired_capacity    = var.desired_capacity
-  max_size            = var.max_size
-  min_size            = var.min_size
+  vpc_zone_identifier = [
+    aws_subnet.public1.id,
+    aws_subnet.public2.id
+    #aws_subnet.public3.id
+  ]
+  desired_capacity = var.desired_capacity
+  max_size         = var.max_size
+  min_size         = var.min_size
 
   launch_template {
     id      = aws_launch_template.workers.id

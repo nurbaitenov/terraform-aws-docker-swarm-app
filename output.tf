@@ -10,9 +10,9 @@ output "public_subnet2" {
   value = aws_subnet.public2.id
 }
 
-output "public_subnet3" {
-  value = aws_subnet.public3.id
-}
+# output "public_subnet3" {
+#   value = aws_subnet.public3.id
+# }
 
 output "manager_instance_id" {
   description = "Manager EC2 Instance ID"
