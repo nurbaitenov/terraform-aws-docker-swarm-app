@@ -95,3 +95,9 @@ variable availability_zones {
     type = string
     default = ""
 }
+
+variable "allowed_ssh_cidr" {
+  type    = string
+  default = ""
+}
+

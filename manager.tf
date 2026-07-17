@@ -1,18 +1,25 @@
 resource "aws_instance" "example" {
-  ami           = "resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
-  instance_type = "t3.micro"
+  ami           = var.image_id
+  instance_type = var.instance_type
 
-  vpc_security_groups =
+  vpc_security_group_ids= [aws_security_group.swarm.id]
 
-  subnet_id =  
+  subnet_id =  var.aws_subnet.public_subnet1.id
 
-  user_data = << E0F
-    "#!/bin/bash
+  user_data = <<E0F
+    #!/bin/bash
     dnf update -y
     dnf install docker -y 
     systemctl enable docker 
     systemctl start docker 
-    docker swarm init"
+    usermod -aG docker ec2-user
+
+    # Wait until Docker is ready
+    until docker info >/dev/null 2>&1; do
+      sleep 2
+    done
+
+    docker swarm init
     E0F
 
   tags = {
