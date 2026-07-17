@@ -1,13 +1,21 @@
-resource "aws_autoscaling_group" "bar" {
+resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier = var.subnets
-  desired_capacity   = var.desired_capacity
-  max_size           = var.max_size 
-  min_size           = var.min_size
+  desired_capacity    = var.desired_capacity
+  max_size            = var.max_size
+  min_size            = var.min_size
 
   launch_template {
-    id      = aws_launch_template.foobar.id
+    id      = aws_launch_template.workers.id
     version = "$Latest"
   }
+
+  depends_on = [
+    aws_instance.manager,
+    aws_launch_template.workers
+  ]
+
+  health_check_type         = "EC2"
+  health_check_grace_period = 300
 }
 
 # Create a new load balancer
@@ -39,7 +47,7 @@ resource "aws_autoscaling_group" "bar" {
 #   }
 # }
 
-resource "aws_autoscaling_attachment" "example" {
-  autoscaling_group_name = aws_autoscaling_group.bar.id
-  elb                    = aws_elb.bar.id
-}
+# resource "aws_autoscaling_attachment" "example" {
+#   autoscaling_group_name = aws_autoscaling_group.bar.id
+#   elb                    = aws_elb.bar.id
+# }

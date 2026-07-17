@@ -1,10 +1,13 @@
-resource "aws_instance" "example" {
+resource "aws_instance" "manager" {
   ami           = var.image_id
   instance_type = var.instance_type
+  key_name      = aws_key_pair.main.key_name
 
-  vpc_security_group_ids= [aws_security_group.swarm.id]
+  associate_public_ip_address = true
 
-  subnet_id =  var.aws_subnet.public_subnet1.id
+  vpc_security_group_ids = [aws_security_group.swarm.id]
+
+  subnet_id = aws_subnet.public1.id
 
   user_data = <<E0F
     #!/bin/bash
@@ -19,7 +22,8 @@ resource "aws_instance" "example" {
       sleep 2
     done
 
-    docker swarm init
+    PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+    docker swarm init --advertise-addr $PRIVATE_IP
     E0F
 
   tags = {
