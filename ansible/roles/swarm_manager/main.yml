@@ -1,0 +1,32 @@
+---
+- name: Check if Swarm is already initialized
+  command: docker info --format '{{ .Swarm.LocalNodeState }}'
+  register: swarm_state
+  changed_when: false
+
+- name: Initialize Docker Swarm
+  command: >
+    docker swarm init
+    --advertise-addr {{ ansible_default_ipv4.address }}
+  when: swarm_state.stdout != "active"
+
+- name: Get worker join token
+  command: docker swarm join-token -q worker
+  register: worker_token
+  changed_when: false
+
+- name: Store manager private IP in AWS Parameter Store
+  community.aws.ssm_parameter:
+    name: "/docker-swarm/manager-ip"
+    type: String
+    value: "{{ ansible_default_ipv4.address }}"
+    overwrite: true
+    state: present
+
+- name: Store worker join token in AWS Parameter Store
+  community.aws.ssm_parameter:
+    name: "/docker-swarm/worker-token"
+    type: SecureString
+    value: "{{ worker_token.stdout }}"
+    overwrite: true
+    state: present

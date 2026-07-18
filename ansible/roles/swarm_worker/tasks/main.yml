@@ -1,0 +1,25 @@
+---
+- name: Check if node is already part of a Swarm
+  command: docker info --format '{{ .Swarm.LocalNodeState }}'
+  register: swarm_state
+  changed_when: false
+
+- name: Read manager IP from AWS Parameter Store
+  community.aws.ssm_parameter:
+    name: "/docker-swarm/manager-ip"
+    state: present
+  register: manager_ip
+
+- name: Read worker join token from AWS Parameter Store
+  community.aws.ssm_parameter:
+    name: "/docker-swarm/worker-token"
+    decrypt: true
+    state: present
+  register: worker_token
+
+- name: Join Docker Swarm
+  command: >
+    docker swarm join
+    --token {{ worker_token.value }}
+    {{ manager_ip.value }}:2377
+  when: swarm_state.stdout != "active"
