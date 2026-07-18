@@ -9,6 +9,8 @@ resource "aws_instance" "manager" {
 
   subnet_id = aws_subnet.public1.id
 
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
+
   user_data = file("${path.module}/manager.sh")
 
   tags = {

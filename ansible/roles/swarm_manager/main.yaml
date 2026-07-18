@@ -1,0 +1,9 @@
+---
+- name: Check if Swarm is already initialized
+  command: docker info --format '{{ .Swarm.LocalNodeState }}'
+  register: swarm_state
+  changed_when: false
+
+- name: Initialize Docker Swarm
+  command: docker swarm init
+  when: swarm_state.stdout != "active"

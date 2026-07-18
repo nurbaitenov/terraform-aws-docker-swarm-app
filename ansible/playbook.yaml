@@ -1,0 +1,28 @@
+---
+- name: Install Docker on all nodes
+  hosts: all
+  become: true
+
+  roles:
+    - docker
+
+- name: Configure Swarm Manager
+  hosts: manager
+  become: true
+
+  roles:
+    - swarm_manager
+
+- name: Configure Swarm Workers
+  hosts: worker
+  become: true
+
+  roles:
+    - swarm_worker
+
+- name: Deploy Docker Stack
+  hosts: manager
+  become: true
+
+  roles:
+    - stack
