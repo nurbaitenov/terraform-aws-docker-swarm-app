@@ -19,6 +19,7 @@ resource "aws_security_group" "swarm" {
     self        = true
   }
 
+
   ingress {
     description = "Swarm Communication TCP"
     from_port   = 7946

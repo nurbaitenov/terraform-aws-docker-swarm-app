@@ -1,25 +1,55 @@
 ---
 - name: Check if node is already part of a Swarm
-  command: docker info --format '{{ .Swarm.LocalNodeState }}'
+  shell: >
+    docker info --format '{{ "{{" }} .Swarm.LocalNodeState {{ "}}" }}'
   register: swarm_state
   changed_when: false
+  failed_when: false
 
-- name: Read manager IP from AWS Parameter Store
+- name: Read manager IP from SSM
   community.aws.ssm_parameter:
-    name: "/docker-swarm/manager-ip"
-    state: present
+    name: /docker-swarm/manager-ip
+    region: us-east-1
   register: manager_ip
+  delegate_to: localhost
+  run_once: true
 
 - name: Read worker join token from AWS Parameter Store
   community.aws.ssm_parameter:
-    name: "/docker-swarm/worker-token"
-    decrypt: true
-    state: present
+    name: /docker-swarm/worker-token
+    decryption: true
+    region: us-east-1
   register: worker_token
+  delegate_to: localhost
+  run_once: true
+
+- name: Read manager IP
+  command: >
+    aws ssm get-parameter
+    --name /docker-swarm/manager-ip
+    --region us-east-1
+    --query Parameter.Value
+    --output text
+  register: manager_ip
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
+
+- name: Read worker token
+  command: >
+    aws ssm get-parameter
+    --name /docker-swarm/worker-token
+    --region us-east-1
+    --query Parameter.Value
+    --output text
+  register: worker_token
+  delegate_to: localhost
+  run_once: true
+  changed_when: false
 
 - name: Join Docker Swarm
   command: >
     docker swarm join
-    --token {{ worker_token.value }}
-    {{ manager_ip.value }}:2377
+    --token {{ worker_token.stdout }}
+    {{ manager_ip.stdout }}:2377
   when: swarm_state.stdout != "active"

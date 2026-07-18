@@ -1,7 +1,7 @@
 resource "aws_ssm_parameter" "swarm_manager_ip" {
   name  = "/docker-swarm/manager-ip"
   type  = "String"
-  value = ""
+  value = "placeholder"
 
   lifecycle {
     ignore_changes = [value]

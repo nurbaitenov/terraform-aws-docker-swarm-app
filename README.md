@@ -12,6 +12,7 @@ This project automates the deployment of a Docker Swarm cluster on AWS using **T
 - Automatically join worker nodes to the cluster.
 - Prepare the environment for deploying containerized applications.
 
+
 ## What Has Been Achieved
 
 - Automated AWS infrastructure provisioning.
@@ -48,4 +49,14 @@ Store Manager IP & Join Token in SSM
 Workers Join Automatically
     ↓
 Ready to Deploy Applications
+```
+
+
+# Run
+```
+terraform init
+terraform apply --var-file dev.tfvars
+
+ansible-inventory -i aws_ec2.yml --graph
+ansible-playbook -i aws_ec2.yml playbook.yml
 ```

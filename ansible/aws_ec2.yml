@@ -7,9 +7,7 @@ regions:
 filters:
   instance-state-name: running
 
-hostnames:
-  - public-ip-address
-
 keyed_groups:
   - key: tags.Role
     prefix: ""
+    separator: ""
