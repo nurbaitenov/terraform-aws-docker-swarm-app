@@ -12,6 +12,7 @@ resource "aws_instance" "manager" {
   user_data = file("${path.module}/manager.sh")
 
   tags = {
-    Name = "dockerswarm"
+    Name = "swarm-manager"
+    Role = "manager"
   }
 }

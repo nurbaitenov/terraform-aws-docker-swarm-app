@@ -10,6 +10,11 @@ resource "aws_launch_template" "workers" {
     aws_instance.manager
   ]
 
+  tags = {
+    Name = "swarm-worker"
+    Role = "worker"
+  }
+
   user_data = base64encode(<<-EOF
 #!/bin/bash
 dnf update -y

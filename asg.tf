@@ -18,6 +18,18 @@ resource "aws_autoscaling_group" "asg" {
     aws_launch_template.workers
   ]
 
+  tag {
+    key                 = "Role"
+    value               = "worker"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "swarm-worker"
+    propagate_at_launch = true
+  }
+
   health_check_type         = "EC2"
   health_check_grace_period = 300
 }
