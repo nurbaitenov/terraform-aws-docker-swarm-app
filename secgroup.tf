@@ -32,71 +32,13 @@ resource "aws_security_group" "bastion" {
 #########################################
 
 resource "aws_security_group" "manager" {
-  name        = "manager-sg"
-  description = "Docker Swarm Manager"
-  vpc_id      = aws_vpc.main.id
-
+  name   = "manager-sg"
+  vpc_id = aws_vpc.main.id
   ingress {
-    description     = "SSH from Bastion"
     from_port       = 22
     to_port         = 22
     protocol        = "tcp"
     security_groups = [aws_security_group.bastion.id]
-  }
-
-  ingress {
-    description = "Swarm Manager Port"
-    from_port   = 2377
-    to_port     = 2377
-    protocol    = "tcp"
-    security_groups = [
-      aws_security_group.manager.id,
-      aws_security_group.worker.id
-    ]
-  }
-
-  ingress {
-    description = "Node Communication TCP"
-    from_port   = 7946
-    to_port     = 7946
-    protocol    = "tcp"
-    security_groups = [
-      aws_security_group.manager.id,
-      aws_security_group.worker.id
-    ]
-  }
-
-  ingress {
-    description = "Node Communication UDP"
-    from_port   = 7946
-    to_port     = 7946
-    protocol    = "udp"
-    security_groups = [
-      aws_security_group.manager.id,
-      aws_security_group.worker.id
-    ]
-  }
-
-  ingress {
-    description = "Overlay Network"
-    from_port   = 4789
-    to_port     = 4789
-    protocol    = "udp"
-    security_groups = [
-      aws_security_group.manager.id,
-      aws_security_group.worker.id
-    ]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "manager-sg"
   }
 }
 
@@ -105,68 +47,17 @@ resource "aws_security_group" "manager" {
 #########################################
 
 resource "aws_security_group" "worker" {
-  name        = "worker-sg"
-  description = "Docker Swarm Worker"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    description     = "SSH from Bastion"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [aws_security_group.bastion.id]
-  }
-
-  ingress {
-    description     = "Swarm Manager Port"
-    from_port       = 2377
-    to_port         = 2377
-    protocol        = "tcp"
-    security_groups = [aws_security_group.manager.id]
-  }
-
-  ingress {
-    description = "Node Communication TCP"
-    from_port   = 7946
-    to_port     = 7946
-    protocol    = "tcp"
-    security_groups = [
-      aws_security_group.manager.id,
-      aws_security_group.worker.id
-    ]
-  }
-
-  ingress {
-    description = "Node Communication UDP"
-    from_port   = 7946
-    to_port     = 7946
-    protocol    = "udp"
-    security_groups = [
-      aws_security_group.manager.id,
-      aws_security_group.worker.id
-    ]
-  }
-
-  ingress {
-    description = "Overlay Network"
-    from_port   = 4789
-    to_port     = 4789
-    protocol    = "udp"
-    security_groups = [
-      aws_security_group.manager.id,
-      aws_security_group.worker.id
-    ]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "worker-sg"
-  }
+  name   = "worker-sg"
+  vpc_id = aws_vpc.main.id
 }
 
+
+resource "aws_security_group_rule" "worker_to_manager_2377" {
+  type      = "ingress"
+  from_port = 2377
+  to_port   = 2377
+  protocol  = "tcp"
+
+  security_group_id        = aws_security_group.manager.id
+  source_security_group_id = aws_security_group.worker.id
+}

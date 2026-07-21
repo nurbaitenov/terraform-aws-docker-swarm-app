@@ -15,5 +15,5 @@ provider "aws" {
 
 resource "aws_key_pair" "main" {
   key_name   = "deployer-key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = file("/home/nursdev017/.ssh/id_ed25519.pub")
 }

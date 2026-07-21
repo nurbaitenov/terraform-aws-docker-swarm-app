@@ -1,7 +1,7 @@
 resource "aws_instance" "bastion" {
   ami                         = var.image_id
   instance_type               = var.instance_type
-  subnet_id                   = aws_subnet.public.id
+  subnet_id                   = aws_subnet.public1.id
   key_name                    = aws_key_pair.main.key_name
   vpc_security_group_ids      = [aws_security_group.bastion.id]
   associate_public_ip_address = true
