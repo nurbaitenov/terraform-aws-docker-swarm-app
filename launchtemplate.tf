@@ -4,7 +4,9 @@ resource "aws_launch_template" "workers" {
   instance_type = var.instance_type
   key_name      = aws_key_pair.main.key_name
 
-  vpc_security_group_ids = [aws_security_group.swarm.id]
+  vpc_security_group_ids = [
+    aws_security_group.worker.id
+  ]
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ec2_profile.name

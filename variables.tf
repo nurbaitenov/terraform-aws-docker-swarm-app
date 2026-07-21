@@ -16,37 +16,11 @@ variable "public_subnet1" {
   default     = ""
 }
 
-variable "public_subnet2" {
-  description = "Please provide public subnet2"
+variable "private_subnet1" {
+  description = "Please provide private subnet1"
   type        = string
   default     = ""
 }
-
-variable "public_subnet3" {
-  description = "Please provide public subnet2"
-  type        = string
-  default     = ""
-}
-
-
-# variable "private_subnet1" {
-#     description = "Please provide private subnet1"
-#     type = string
-#     default = ""
-# }
-
-# variable "private_subnet2" {
-#     description = "Please provide private subnet1"
-#     type = string
-#     default = ""
-# }
-
-# variable "private_subnet3" {
-#     description = "Please provide private subnet1"
-#     type = string
-#     default = ""
-# }
-
 
 variable "name_prefix" {
   description = "Please provide a value"
