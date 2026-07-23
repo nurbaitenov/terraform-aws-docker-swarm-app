@@ -3,13 +3,13 @@ resource "aws_instance" "manager" {
   instance_type = var.instance_type
   key_name      = aws_key_pair.main.key_name
 
-  associate_public_ip_address = false
+  associate_public_ip_address = true
 
   vpc_security_group_ids = [
     aws_security_group.manager.id
   ]
 
-  subnet_id = aws_subnet.private1.id
+  subnet_id = aws_subnet.public1.id
 
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
